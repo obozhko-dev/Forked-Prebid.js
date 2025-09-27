@@ -7,7 +7,7 @@
 	<title>Prebid.js Banner Example</title>
 
 	<!-- Prebid.js -->
-	<script async src="http://localhost:4444/bundle?modules=appnexusBidAdapter"></script>
+	<script async src="http://localhost:4444/bundle?modules=adtelligentBidAdapter"></script>
 
 	<!-- Google Publisher Tag -->
 	<script async src="https://www.googletagservices.com/tag/js/gpt.js"></script>
@@ -25,39 +25,32 @@
 				}
 			},
 			bids: [{
-				bidder: 'appnexus',
+				bidder: 'adtelligent',
 				params: {
-					placementId: 13144370
+					aid: 350975
 				}
-			}]
-		 }
-		,{
-			code: 'div-gpt-ad-1460505748561-1',
-			mediaTypes: {
-				banner: {
-					sizes: [[300, 250], [300, 600]],
-				}
-			},
-			bids: [{
-				bidder: "appnexus",
+			}, {
+				 bidder: 'bidmatic',
 				params: {
-					placementId: 13144370
+					source: 886409,
+					bidfloor: 0.1
 				}
 			}]
 		}
-	];
+
+		];
 	</script>
 
 	<script>
 		var googletag = googletag || {};
 		googletag.cmd = googletag.cmd || [];
 
-		googletag.cmd.push(function() {
+		googletag.cmd.push(function () {
 			googletag.pubads().disableInitialLoad();
 		});
 
 		pbjs.que.push(function () {
-			pbjs.setConfig({enableTIDs: true});
+			pbjs.setConfig({ enableTIDs: true });
 			pbjs.addAdUnits(adUnits);
 			pbjs.requestBids({ bidsBackHandler: sendAdServerRequest });
 		});

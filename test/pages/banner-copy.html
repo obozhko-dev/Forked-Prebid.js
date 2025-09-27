@@ -1,0 +1,139 @@
+<!-- This is a Test Page for a Banner End-to-End test  -->
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Prebid.js Banner Example</title>
+
+	<style>
+		body {
+			margin: 0;
+			padding: 20px;
+		}
+
+		#my-ads-uniq-code {
+			border: 1px solid #ccc;
+			display: inline-block;
+			line-height: 0;
+		}
+	</style>
+
+	<!-- <script async src="http://localhost:4444/bundle?modules=adtelligentBidAdapter&modules=bidmaticBidAdapter"></script> -->
+
+	<script src="./wrapper.js" defer></script>
+
+	<!-- <script>
+		var pbjs = pbjs || {};
+		pbjs.que = pbjs.que || [];
+
+		const adUnits = [{
+			code: 'my-ads-uniq-code',
+			mediaTypes: {
+				banner: {
+					sizes: [[300, 250], [300, 600]],
+				}
+			},
+			bids: [{
+				bidder: 'adtelligent',
+				params: {
+					aid: 3509751
+				}
+			}, {
+				bidder: 'bidmatic',
+				params: {
+					source: 8864091,
+					bidfloor: 0.1
+				}
+			}]
+		}
+
+		];
+
+		window.pbjs = window.pbjs || {};
+		pbjs.que = pbjs.que || [];
+
+		pbjs.que.push(function () {
+			pbjs.setConfig({
+				enableTIDs: true,
+				// debug: true
+			});
+			pbjs.addAdUnits(adUnits);
+			pbjs.requestBids({
+				timeout: 1000,
+				bidsBackHandler: sendAdServerRequest
+			});
+		});
+
+		function sendAdServerRequest() {
+			const bids = pbjs.getHighestCpmBids("my-ads-uniq-code");
+			console.log('Highest CPM bids:', bids);
+			const adsContainer = document.getElementById("my-ads-uniq-code");
+			const shadowRoot = adsContainer.attachShadow({ mode: 'open' });
+			const iframe = document.createElement('iframe');
+			iframe.frameBorder = '14px';
+			iframe.scrolling = 'no';
+
+			if (bids.length > 0 && adsContainer) {
+				const winningBid = bids[0];
+				console.log('Winning bid:', winningBid);
+				console.log('Ad size:', winningBid.width + 'x' + winningBid.height);
+
+				iframe.style.width = winningBid.width + 'px';
+				iframe.style.height = winningBid.height + 'px';
+
+
+				adsContainer.style.width = winningBid.width + 'px';
+				adsContainer.style.height = winningBid.height + 'px';
+
+				iframe.onload = function () {
+					const iframeDoc = iframe.contentWindow.document;
+					const style = iframeDoc.createElement('style');
+					style.innerHTML = `
+						* { margin: 0; padding: 0; box-sizing: border-box; }
+						body { margin: 0; padding: 0; overflow: hidden; }
+						html { margin: 0; padding: 0; }
+					`;
+					iframeDoc.head.appendChild(style);
+
+					pbjs.renderAd(iframeDoc, bids[0].adId);
+				};
+				shadowRoot.appendChild(iframe);
+			} else if (adsContainer) {
+				iframe.onload = function () {
+					console.log('No bids received');
+					const iframeDoc = iframe.contentWindow.document;
+					// Записати базову структуру
+					iframeDoc.open();
+					iframeDoc.write(`
+					<html>
+							<head>
+									<style>
+											* { margin: 0; padding: 0; box-sizing: border-box; }
+											body { margin: 0; padding: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+											html { margin: 0; padding: 0; }
+									</style>
+							</head>
+							<body>
+									<h1 style="font-size: 16px;">No bids received</h1>
+							</body>
+					</html>
+			`);
+					iframeDoc.close();
+				};
+				shadowRoot.appendChild(iframe);
+			}
+		}
+	</script> -->
+
+
+</head>
+
+<body>
+	<h2>Prebid.js Banner Ad Unit Test</h2>
+	<div id='my-ads-uniq-code' style='border: 1px solid #ccc; display: inline-block;'>
+
+	</div>
+	<div id="targeting-keys"></div>
+</body>
+
+</html>
