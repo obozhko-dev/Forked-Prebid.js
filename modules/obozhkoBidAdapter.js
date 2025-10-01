@@ -1,40 +1,54 @@
 import { registerBidder } from '../src/adapters/bidderFactory.js';
+
 import { BANNER } from '../src/mediaTypes.js';
 
-const AUCTION_PATH = 'https://prebid.obozhko.ua/auction';
+// const AUCTION_PATH = 'https://prebid.obozhko.ua/auction';
 const BIDDER_CODE = 'obozhko';
+const AUCTION_PATH = 'http://localhost:3000/ads/bid';
 
 export const spec = {
   code: BIDDER_CODE,
   supportedMediaTypes: [BANNER],
 
-  isBidRequestValid: (bid) => {
-    return !!bid.params.priceId;
+  isBidRequestValid: function(bid) {
+    return !!bid.params && !!bid.params.anonId && !!bid.sizes;
   },
 
-  buildRequests: (validBidRequests) => {
+  buildRequests: function(validBidRequests, bidderRequest) {
+    const sizes = validBidRequests[0].sizes || [];
+    const anonId = validBidRequests[0].params.anonId;
+    const geo = validBidRequests[0].params.geo;
+
     return {
       method: 'POST',
       url: AUCTION_PATH,
-      data: validBidRequests.map(req => ({
-        priceId: req.params.priceId,
-        adUnitCode: req.adUnitCode
-      }))
+      data: {
+        anonId: anonId,
+        adUnitCode: validBidRequests[0].adUnitCode,
+        sizes: sizes,
+        pageUrl: bidderRequest.refererInfo?.page || '',
+        userAgent: navigator.userAgent,
+        geo: geo,
+      }
     };
   },
 
-  interpretResponse: (serverResponse, bidRequest) => {
-    if (!serverResponse.body) return [];
-    return serverResponse.body.bids.map(bid => ({
-      requestId: bidRequest.data[0].adUnitCode,
-      cpm: bid.cpm,
-      width: bid.width,
-      height: bid.height,
-      creativeId: bid.creativeId,
-      currency: bid.currency || 'USD',
-      ad: bid.adContent,
-      ttl: 300
-    }));
+  interpretResponse: function(serverResponse, request) {
+    const resp = serverResponse.body;
+    if (resp && resp.nobid) return [];
+
+    return [{
+      requestId: resp.requestId,
+      cpm: resp.cpm,
+      width: resp.width,
+      height: resp.height,
+      creativeId: resp.creativeId,
+      currency: resp.currency,
+      ad: resp.adContent,
+      ttl: resp.ttl,
+      meta: resp.meta || {},
+      netRevenue: true,
+    }];
   }
 };
 
