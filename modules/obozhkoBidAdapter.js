@@ -15,22 +15,22 @@ export const spec = {
   },
 
   buildRequests: function(validBidRequests, bidderRequest) {
-    const sizes = validBidRequests[0].sizes || [];
-    const anonId = validBidRequests[0].params.anonId;
-    const geo = validBidRequests[0].params.geo;
-
-    return {
+    return validBidRequests.map(bid => ({
       method: 'POST',
       url: AUCTION_PATH,
+      headers: {
+      'Content-Type': 'application/json'
+      },
       data: {
-        anonId: anonId,
-        adUnitCode: validBidRequests[0].adUnitCode,
-        sizes: sizes,
+        anonId: bid.params.anonId,
+        adUnitCode: bid.adUnitCode,
+        sizes: bid.sizes,
         pageUrl: bidderRequest.refererInfo?.page || '',
         userAgent: navigator.userAgent,
-        geo: geo,
+        geo: bid.params.geo,
+        bidId: bid.bidId
       }
-    };
+    }));
   },
 
   interpretResponse: function(serverResponse, request) {
@@ -51,5 +51,6 @@ export const spec = {
     }];
   }
 };
+
 
 registerBidder(spec);

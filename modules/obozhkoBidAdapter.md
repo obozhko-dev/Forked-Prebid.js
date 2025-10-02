@@ -29,9 +29,20 @@ pbjs.addAdUnits([{
 }]);
 ```
 
+## Backend Request
+
+Each ad slot (bid) results in a separate HTTP POST to the backend with at least:
+- `anonId`
+- `adUnitCode`
+- `sizes`
+- `pageUrl`
+- `userAgent`
+- `geo`
+- `bidId`
+
 ## Backend Response Should Include:
 
-- `requestId`
+- `requestId` (must match `bidId` from the POST request)
 - `creativeId`
 - `adType`
 - `width`
@@ -40,8 +51,3 @@ pbjs.addAdUnits([{
 - `creativeUrl` or `adContent`
 - `currency`
 - `ttl`
-- (optional) `meta`
-
-## License
-
-MIT
