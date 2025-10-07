@@ -35,7 +35,13 @@ export const spec = {
 
   interpretResponse: function(serverResponse, request) {
     const resp = serverResponse.body;
-    if (resp && resp.nobid) return [];
+    if (resp && resp.nobid) {
+      console.log('obozhko adapter nobid:', resp.message || 'No creatives available');
+      if (window.pbjs && window.pbjs.logMessage) {
+        window.pbjs.logMessage(`Obozhko adapter: ${resp.message || 'nobid'}`);
+      }
+      return [];
+    }
 
     return [{
       requestId: resp.requestId,
