@@ -5,14 +5,14 @@ describe('obozhko Bid Adapter', function () {
   const bid1 = {
     adUnitCode: 'ad-slot-1',
     bidder: 'obozhko',
-    sizes: [[728, 90]],
+    sizes: [[728, 90], [300, 250]],
     params: { anonId: 'test-uuid', geo: 'UA' },
     bidId: 'bid-id-1'
   };
   const bid2 = {
     adUnitCode: 'ad-slot-2',
     bidder: 'obozhko',
-    sizes: [[300, 250]],
+    sizes: [[300, 250], [728, 90]],
     params: { anonId: 'test-uuid2', geo: 'UA' },
     bidId: 'bid-id-2'
   };
