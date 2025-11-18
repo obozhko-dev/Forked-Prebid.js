@@ -1,49 +1,53 @@
-import { check } from "yargs"
-import Adapter from "../../../src/adapter"
+# Obozhko Bid Adapter
 
-#obozhko Prebid Adapter task 5
+This Prebid adapter allows connecting server-side creative delivery from your own backend (e.g., Fastify/FastAPI/Node.js) to Prebid.js.
 
-Minimal adapter needed data Prebid.js.
+## Overview
 
-## Config to include the adapter:
+- **Bidder code:** `obozhko`
+- **Ad type:** Banner
+- **Endpoint:** `POST http://localhost:3000/ads/bid`
+
+## Parameters
+
+- `anonId` — unique anonymous user identifier (retrieved from localStorage or cookies)
+- `geo` — geotargeting (optional)
+
+## Usage Example
 
 ```javascript
 pbjs.addAdUnits([{
-  code: 'banner1',
-  mediaTypes: { banner: { sizes: [[300, 250]] }},
+  code: 'ad-slot-1',
+  sizes: [[728, 90]],
   bids: [{
     bidder: 'obozhko',
     params: {
-      priceId: 'test123'
+      anonId: localStorage.getItem('anonId'),
+      geo: 'UA'
     }
   }]
 }]);
 ```
 
-## Parameters desription
+## Backend Request
 
-- `priceId` — price identity.
-priceId 'premium' — expensive,
-priceId 'basic' — cheap,
-priceId 'test123' — for test bids.
+Each ad slot (bid) results in a separate HTTP POST to the backend with at least:
+- `anonId`
+- `adUnitCode`
+- `sizes`
+- `pageUrl`
+- `userAgent`
+- `geo`
+- `bidId`
 
-## Example server response
+## Backend Response Should Include:
 
-```json
-{
-  "bids": [{
-    "priceId": "test123", 
-    "cpm": 0.5,
-    "width": 300,
-    "height": 250,
-    "creativeId": "abc123",
-    "adContent": "<div>Ad</div>"
-  }]
-}
-```
-
-## Adapter
-
-- `isBidRequestValid`: check for presence of priceId.
-- `buildRequests`: sends requests to the server.
-- `interpretResponse`: receives an array of bids and transforms it for Prebid.js.
+- `requestId` (must match `bidId` from the POST request)
+- `creativeId`
+- `adType`
+- `width`
+- `height`
+- `cpm`
+- `creativeUrl` or `adContent`
+- `currency`
+- `ttl`
